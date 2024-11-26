@@ -23,7 +23,7 @@ export default function RootLayout({
             textAlign: "center",
           }}
         >
-          <h1>TODOアプリ</h1>
+          <h1>Todo List</h1>
         </header>
         <main style={{ padding: "1rem" }}>{children}</main>
         <footer
@@ -34,7 +34,7 @@ export default function RootLayout({
             textAlign: "center",
           }}
         >
-          © 2024 TODO App
+          © 2024 Todo App
         </footer>
       </body>
     </html>
