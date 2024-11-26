@@ -2,21 +2,26 @@ import { createClient } from "@supabase/supabase-js";
 
 // 環境変数からSupabaseのURLとAPIキーを取得
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 // Supabaseクライアントの作成
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 新しいTodoの追加
-export const createTodo = async (title: string, description: string) => {
-  const { data, error } = await supabase
-    .from("todos")
-    .insert([{ title, description }])
-    .single();
-  if (error) {
-    console.error("Error creating todo:", error);
-    return null;
-  }
+export const addTodo = async (todo: {
+  title: string;
+  description: string;
+  dueDate: string;
+}) => {
+  const { data, error } = await supabase.from("todos").insert([
+    {
+      title: todo.title,
+      description: todo.description,
+      due_date: todo.dueDate,
+      completed: false,
+    },
+  ]);
+  if (error) throw new Error(error.message);
   return data;
 };
 
@@ -71,3 +76,5 @@ export const deleteTodo = async (id: string) => {
   }
   return data;
 };
+
+export default supabase;
