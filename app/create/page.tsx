@@ -1,44 +1,92 @@
 /*TODO作成ページ*/
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createTodo } from "../../lib/supabaseClient";
+import { Button, Container, TextField, Typography } from "@mui/material";
+import { addTodo } from "../../lib/supabaseClient";
 
-export default function Create() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+export default function CreatePage() {
   const router = useRouter();
 
+  //フォームの状態管理
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    dueDate: "",
+  });
+
+  //入力された内容の変更処理
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prevForm) => ({ ...prevForm, [name]: value }));
+  };
+
+  //フォームの送信処理
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newTodo = await createTodo(title, description);
-    if (newTodo) {
-      router.push("/"); // 作成後に一覧ページにリダイレクト
+    //タイトルは必須
+    if (!form.title) {
+      alert("タイトルは必須です。");
+      return;
+    }
+
+    //データの保存
+    try {
+      await addTodo(form);
+      alert("Todoが作成されました!");
+      router.push("/");
+    } catch (error) {
+      console.error("Todo作成エラー:", error);
+      alert("Todoの作成に失敗しました。");
     }
   };
 
   return (
-    <div>
-      <h1>新しいTODOを作成</h1>
+    <Container maxWidth="sm" style={{ marginTop: "2rem" }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        新しいTodoを作成
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>タイトル:</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>詳細:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <button type="submit">作成</button>
+        <TextField
+          label="タイトル"
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="説明"
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          multiline
+          rows={4}
+        />
+        <TextField
+          label="期限"
+          name="dueDate"
+          type="date"
+          value={form.dueDate}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          style={{ marginTop: "1rem" }}
+        >
+          作成
+        </Button>
       </form>
-    </div>
+    </Container>
   );
 }
