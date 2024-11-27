@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Header from "./components/Header";
+import { Container } from "@mui/material";
 
 export const metadata: Metadata = {
   title: "Todo App",
@@ -13,19 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <head>{/* 必要に応じて追加のmetaタグやfaviconを設定 */}</head>
       <body style={{ margin: 0, padding: 0, fontFamily: "Arial, sans-serif" }}>
-        <header
-          style={{
-            backgroundColor: "#1976d2",
-            color: "#fff",
-            padding: "1rem",
-            textAlign: "center",
-          }}
-        >
-          <h1>Todo List</h1>
-        </header>
-        <main style={{ padding: "1rem" }}>{children}</main>
+        <Header />
+        <Container component="main" sx={{ padding: "2rem 0" }}>
+          {children}
+        </Container>
         <footer
           style={{
             marginTop: "2rem",
