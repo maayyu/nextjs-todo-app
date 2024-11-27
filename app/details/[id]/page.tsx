@@ -1,13 +1,30 @@
 /*TODO詳細ページ*/
+"use client";
 
-export default function Details() {
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getTodoById } from "../../../lib/supabaseClient";
+
+export default function Details({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const [todo, setTodo] = useState<any | null>(null);
+
+  useEffect(() => {
+    const fetchTodo = async () => {
+      const data = await getTodoById(id);
+      setTodo(data);
+    };
+    fetchTodo();
+  }, [id]);
+
+  if (!todo) return <div>Loading...</div>;
+
   return (
     <div>
-      <h1>TODOの詳細</h1>
-      <p>ID</p>
-      {/* TODO: Supabaseから詳細情報を取得して表示 */}
-      <p>タイトル: サンプルタイトル</p>
-      <p>詳細: サンプル詳細</p>
+      <h1>{todo.title}</h1>
+      <p>{todo.description}</p>
+      <p>作成日時: {todo.created_at}</p>
+      {/* 編集・削除機能をここに追加 */}
     </div>
   );
 }
