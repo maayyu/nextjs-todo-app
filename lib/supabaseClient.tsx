@@ -12,6 +12,7 @@ export const addTodo = async (todo: {
   title: string;
   description: string;
   dueDate: string;
+  completed: boolean;
 }) => {
   const { data, error } = await supabase.from("todos").insert([
     {

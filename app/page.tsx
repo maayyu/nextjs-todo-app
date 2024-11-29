@@ -11,13 +11,13 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import supabase from "../lib/supabaseClient";
+import supabase, { updateTodo } from "../lib/supabaseClient";
 
 interface Todo {
   id: number;
   title: string;
   description: string;
-  dueDate: string;
+  due_date: string;
   completed: boolean;
 }
 
@@ -37,13 +37,25 @@ export default function HomePage() {
     fetchTodos();
   }, []);
 
-  //完了ステータスの切り替え
-  const toggleComplete = (id: number) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+  // チェックボックスの状態を切り替え（データベースに反映）
+  const toggleComplete = async (id: number, currentCompleted: boolean) => {
+    try {
+      // Supabaseに状態更新
+      const updatedTodo = await updateTodo(id.toString(), {
+        completed: !currentCompleted,
+      });
+
+      // ローカルの状態を更新
+      if (updatedTodo) {
+        setTodos((prevTodos) =>
+          prevTodos.map((todo) =>
+            todo.id === id ? { ...todo, completed: !currentCompleted } : todo
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error toggling complete status:", error);
+    }
   };
 
   //削除ボタンの処理
@@ -80,6 +92,15 @@ export default function HomePage() {
               backgroundColor: todo.completed ? "#e8f5e9" : "#ffffff",
             }}
           >
+            {/* 左端に配置するチェックボックス */}
+            <Checkbox
+              checked={todo.completed}
+              onChange={() => toggleComplete(todo.id, todo.completed)}
+              color="primary"
+              style={{ marginRight: "1rem" }}
+            />
+
+            {/* タイトルと詳細 */}
             <div style={{ flex: 1 }}>
               <Typography
                 variant="h6"
@@ -93,15 +114,12 @@ export default function HomePage() {
                 {todo.description}
               </Typography>
               <Typography variant="caption" color="textSecondary">
-                期限: {todo.dueDate}
+                期限: {todo.due_date}
               </Typography>
             </div>
+
+            {/* ボタン類 */}
             <div style={{ display: "flex", gap: "0.5rem" }}>
-              <Checkbox
-                checked={todo.completed}
-                onChange={() => toggleComplete(todo.id)}
-                color="primary"
-              />
               <Button
                 variant="contained"
                 color="secondary"
