@@ -22,16 +22,16 @@ interface Todo {
 }
 
 export default function HomePage() {
-  // サンプルTodoリスト
   const [todos, setTodos] = useState<Todo[]>([]);
 
   useEffect(() => {
     const fetchTodos = async () => {
-      const { date, error } = await supabase.from("todos").select("*");
+      const { data, error } = await supabase.from("todos").select("*");
       if (error) {
         console.error("Todoの取得エラー:", error);
       } else {
-        setTodos(date || []);
+        console.log("取得したデータ:", data);
+        setTodos(data || []);
       }
     };
     fetchTodos();
