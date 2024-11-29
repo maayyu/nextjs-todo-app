@@ -34,7 +34,6 @@ export default function CreatePage() {
     //データの保存
     try {
       await addTodo(form);
-      alert("Todoが作成されました!");
       router.push("/");
     } catch (error) {
       console.error("Todo作成エラー:", error);
