@@ -37,22 +37,24 @@ export default function HomePage() {
     fetchTodos();
   }, []);
 
-  // チェックボックスの状態を切り替え（データベースに反映）
+  // チェックボックスの状態を切り替えるための非同期処理（データベースに反映）
   const toggleComplete = async (id: number, currentCompleted: boolean) => {
     try {
       // Supabaseに状態更新
       const updatedTodo = await updateTodo(id.toString(), {
         completed: !currentCompleted,
       });
+      console.log(updatedTodo);
 
       // ローカルの状態を更新
-      if (updatedTodo) {
+      // if (updatedTodo) {
         setTodos((prevTodos) =>
           prevTodos.map((todo) =>
             todo.id === id ? { ...todo, completed: !currentCompleted } : todo
           )
         );
-      }
+        console.log(updatedTodo);
+      // }
     } catch (error) {
       console.error("Error toggling complete status:", error);
     }
@@ -66,7 +68,7 @@ export default function HomePage() {
   return (
     <Container maxWidth="md" style={{ marginTop: "2rem" }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        TODO一覧
+        すべてのTODO
       </Typography>
       <Link href="/create" passHref>
         <Button
