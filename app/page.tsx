@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import supabase, { updateTodo } from "../lib/supabaseClient";
+import { updateTodo, deleteTodo, getTodos } from "../lib/supabaseClient";
 
 interface Todo {
   id: number;
@@ -19,6 +19,7 @@ interface Todo {
   description: string;
   due_date: string;
   completed: boolean;
+  deleted: boolean;
 }
 
 export default function HomePage() {
@@ -26,13 +27,14 @@ export default function HomePage() {
 
   useEffect(() => {
     const fetchTodos = async () => {
-      const { data, error } = await supabase.from("todos").select("*");
-      if (error) {
-        console.error("Todoの取得エラー:", error);
-      } else {
-        console.log("取得したデータ:", data);
-        setTodos(data || []);
-      }
+      const fetchedTodos = await getTodos();
+      setTodos(fetchedTodos.filter((todo) => !todo.deleted));
+      // const { data, error } = await supabase.from("todos").select("*");
+      // if (error) {
+      //   console.error("Todoの取得エラー:", error);
+      // } else {
+      //   console.log("取得したデータ:", data);
+      //   setTodos(data || []);
     };
     fetchTodos();
   }, []);
@@ -48,12 +50,12 @@ export default function HomePage() {
 
       // ローカルの状態を更新
       // if (updatedTodo) {
-        setTodos((prevTodos) =>
-          prevTodos.map((todo) =>
-            todo.id === id ? { ...todo, completed: !currentCompleted } : todo
-          )
-        );
-        console.log(updatedTodo);
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo.id === id ? { ...todo, completed: !currentCompleted } : todo
+        )
+      );
+      console.log(updatedTodo);
       // }
     } catch (error) {
       console.error("Error toggling complete status:", error);
@@ -61,8 +63,15 @@ export default function HomePage() {
   };
 
   //削除ボタンの処理
-  const deleteTodo = (id: number) => {
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+  const toggleDeleted = async (id: number) => {
+    try {
+      // Supabaseに状態更新
+      const deletedTodo = await deleteTodo(id.toString());
+      console.log(deletedTodo);
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error("Error toggling delete status:", error);
+    }
   };
 
   return (
@@ -125,7 +134,7 @@ export default function HomePage() {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => deleteTodo(todo.id)}
+                onClick={() => toggleDeleted(todo.id)}
               >
                 削除
               </Button>

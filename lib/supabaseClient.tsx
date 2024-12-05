@@ -28,7 +28,10 @@ export const addTodo = async (todo: {
 
 // 全てのTodoの取得
 export const getTodos = async () => {
-  const { data, error } = await supabase.from("todos").select("*");
+  const { data, error } = await supabase
+    .from("todos")
+    .select("*")
+    .eq("deleted", false);
   if (error) {
     console.error("Error fetching todos:", error);
     return [];
@@ -68,7 +71,7 @@ export const updateTodo = async (id: string, updatedFields: Partial<any>) => {
 export const deleteTodo = async (id: string) => {
   const { data, error } = await supabase
     .from("todos")
-    .delete()
+    .update({ deleted: true })
     .eq("id", id)
     .single();
   if (error) {
