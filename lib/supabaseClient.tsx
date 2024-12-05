@@ -81,4 +81,33 @@ export const deleteTodo = async (id: string) => {
   return data;
 };
 
+// 削除されたTodoを取得
+export const getDeletedTodos = async () => {
+  const { data, error } = await supabase
+    .from("todos")
+    .select("*")
+    .eq("deleted", true);
+  if (error) {
+    console.error("Error fetching deleted todos:", error);
+    return [];
+  }
+  return data;
+};
+
+// Todoを復元する関数
+export const restoreTodo = async (id: string) => {
+  const { data, error } = await supabase
+    .from("todos")
+    .update({ deleted: false }) // deletedをfalseに更新
+    .eq("id", id)
+    .single(); // 1つのデータのみ更新
+
+  if (error) {
+    console.error("Error restoring todo:", error);
+    return null;
+  }
+
+  return data;
+};
+
 export default supabase;

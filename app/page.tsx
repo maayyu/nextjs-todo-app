@@ -147,6 +147,11 @@ export default function HomePage() {
           </ListItem>
         ))}
       </List>
+      <Link href="/deleted" passHref>
+        <Button variant="outlined" color="secondary">
+          削除済みTODOを表示
+        </Button>
+      </Link>
     </Container>
   );
 }
