@@ -41,11 +41,7 @@ export const getTodos = async () => {
 
 // 入力されたTodo詳細の取得
 export const getTodoById = async (id: string) => {
-  const { data, error } = await supabase
-    .from("todos")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const { data, error } = await supabase.from("todos").select("*").eq("id", id);
   if (error) {
     console.error("Error fetching todo by id:", error);
     return null;
@@ -71,7 +67,7 @@ export const updateTodo = async (id: string, updatedFields: Partial<any>) => {
 export const deleteTodo = async (id: string) => {
   const { data, error } = await supabase
     .from("todos")
-    .update({ deleted: true })
+    .delete()
     .eq("id", id)
     .single();
   if (error) {
