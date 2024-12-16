@@ -1,7 +1,7 @@
 /*TODO詳細ページ*/
 "use client";
 
-import { useRouter } from "next/router";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Container, Typography, Button, Box } from "@mui/material";
 import supabase from "../../../lib/supabaseClient";
@@ -16,14 +16,16 @@ interface Todo {
 
 export default function TodoDetail() {
   const router = useRouter();
-  const { id } = router.query; // URLの動的パラメータからidを取得
+  const params = useParams(); // URLの動的パラメータからidを取得
   const [todo, setTodo] = useState<Todo | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const id = params?.id as string;
 
   // idが取得できるまで待つ
   useEffect(() => {
     if (id) {
-      fetchTodoDetails(id as string); // idが取得できたら詳細を取得
+      fetchTodoDetails(id); // idが取得できたら詳細を取得
     }
   }, [id]); // idが変更されるたびにデータを取得
 
