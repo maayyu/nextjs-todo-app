@@ -138,7 +138,7 @@ export default function HomePage() {
               >
                 削除
               </Button>
-              <Link href={`/detail/${todo.id}`} passHref>
+              <Link href={`/details/${todo.id}`} passHref>
                 <Button variant="outlined" color="primary">
                   詳細
                 </Button>

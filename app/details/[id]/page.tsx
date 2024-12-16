@@ -3,7 +3,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Container, Typography, Button, Box } from "@mui/material";
+import { Container, Typography, Button, Box, Link } from "@mui/material";
 import supabase from "../../../lib/supabaseClient";
 
 interface Todo {
@@ -105,6 +105,15 @@ export default function TodoDetail() {
           削除
         </Button>
       </Box>
+      <Link href="/" passHref>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginTop: "3rem" }}
+        >
+          戻る
+        </Button>
+      </Link>
     </Container>
   );
 }
