@@ -14,6 +14,7 @@ export default function CreatePage() {
     title: "",
     description: "",
     dueDate: "",
+    completed: false,
   });
 
   //入力された内容の変更処理
